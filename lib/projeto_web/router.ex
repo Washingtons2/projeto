@@ -24,7 +24,9 @@ defmodule ProjetoWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", ProjetoWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", ProjetoWeb do
+    pipe_through :api
+
+    get "/events/:id", EventController, :index
+  end
 end

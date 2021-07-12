@@ -1,0 +1,26 @@
+<section class="grid grid-cols-2 bg-red-300 h-screen">
+
+  <article class="bg-gray-800 hidden lg:block">
+  </article>
+
+  <article class="bg-gray-100 lg:col-span-1 col-span-2 flex items-center justify-center">
+
+    <%= form_for @changeset, "#", [phx_change: :validate, phx_submit: :save, class: "grid grid-cols-2 gap-y-3 w-full xl:px-40 px-20"], fn f -> %>
+
+      <div class="col-span-2">
+        <%= text_input f, :name, phx_debounce: "blur", class: "w-full p-3 border rounded", placeholder: "" %>
+        <%= error_tag f, :name %>
+      </div>
+      <div class="col-span-2">
+          <%= textarea f, :message, phx_debounce: "blur", class: "w-full p-3 border rounded", placeholder: "" %>
+          <%= error_tag f, :message %>
+      </div>
+      <div class="col-span-2">
+        <%= submit "Acessar", class: "float-right bg-blue-500 text-white py-2.5 px-4 rounded text-sm font-light" %>
+      </div>
+
+    <% end %>
+
+  </article>
+
+</section>

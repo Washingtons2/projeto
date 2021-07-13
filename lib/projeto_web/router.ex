@@ -19,8 +19,6 @@ defmodule ProjetoWeb.Router do
 
     live "/", PageLive, :index
     live "/messages", MessagesLive
-    live "/messages/send", SendLive
-
   end
 
   # Other scopes may use custom stacks.

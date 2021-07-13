@@ -1,30 +1,33 @@
 defmodule ProjetoWeb.MessagesLive do
   use ProjetoWeb, :live_view
 
+  alias Phoenix.PubSub
+
   alias Projeto.Sends
+  alias Projeto.Sends.Messagens
   # alias Projeto.Sends.Messagens
 
-  def render(assigns) do
-    ~L"""
-    <%= for message <- @messages do %>
-      <div class="border p-4">
-        <p class="text-xl"><%= message.name %></p>
-        <p class="text-sm"><%= message.message %></p>
-      </div>
-    <% end %>
-    """
-  end
-
   def mount(_params, _session, socket) do
-    if connected?(socket), do: :timer.send_interval(1000, self(), :tick)
-    mensages = Sends.list_message
-    # IO.inspect :calendar.local_time()
-    {:ok, assign(socket, %{messages: mensages})}
+
+    PubSub.subscribe Projeto.PubSub, "user:123"
+
+    messagens = Sends.list_message
+    socket = assign(socket, :messagens, messagens)
+    {:ok, socket, temporary_assigns: [messagens: []]}
   end
 
-  def handle_info(:tick, socket) do
-    mensages = Sends.list_message
-    {:noreply, assign(socket, date: mensages)}
+  def handle_info({:update_messagens, messagens}, socket) do
+
+    {:noreply, update(socket, :messagens, messagens)}
   end
+
+  def handle_event("save", %{"send_messager" => send_params}, socket) do
+    Sends.create_messagens(send_params)
+
+    PubSub.broadcast Projeto.PubSub, "user:123", {:update_messagens, send_params}
+    
+    {:noreply, update(socket, :messagens, send_params)}
+  end
+
 
 end

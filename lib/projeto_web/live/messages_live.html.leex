@@ -1,0 +1,13 @@
+<%= form_for :send_messager, "#", [phx_submit: :save, class: "container mx-auto border my-12 p-8"], fn f -> %>
+  <%= text_input f, :name, class: "border w-full my-2" %>
+  <%= textarea f, :message, class: "border w-full my-2" %>
+  <%= submit "Enviar" %>
+<% end %>
+
+<div id="chat-messages" phx-update="append">
+  <%= for messagen <- @messagens do %>
+    <p id="<%= messagen.id %>">
+      <span><%= messagen.name %>:</span> <%= messagen.message %>
+    </p>
+  <% end %>
+</div>

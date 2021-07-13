@@ -19,7 +19,9 @@ defmodule Projeto.Sends do
   """
   def list_message do
     Repo.all(Messagens)
+    # Repo.all(from m in Messagens, order_by: [desc: m.id])
   end
+
 
   @doc """
   Gets a single messagens.

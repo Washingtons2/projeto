@@ -4,7 +4,7 @@ defmodule ProjetoWeb.MessagesLive do
   alias Phoenix.PubSub
 
   alias Projeto.Sends
-  alias Projeto.Sends.Messagens
+  # alias Projeto.Sends.Messagens
   # alias Projeto.Sends.Messagens
 
   def mount(_params, _session, socket) do
@@ -16,17 +16,23 @@ defmodule ProjetoWeb.MessagesLive do
     {:ok, socket, temporary_assigns: [messagens: []]}
   end
 
-  def handle_info({:update_messagens, messagens}, socket) do
-
-    {:noreply, update(socket, :messagens, messagens)}
+  def handle_info({:update_messagens, message}, socket) do
+    {:noreply, update(socket, :messagens, fn messagens -> [message | messagens] end)}
   end
 
   def handle_event("save", %{"send_messager" => send_params}, socket) do
-    Sends.create_messagens(send_params)
 
-    PubSub.broadcast Projeto.PubSub, "user:123", {:update_messagens, send_params}
-    
-    {:noreply, update(socket, :messagens, send_params)}
+    case Sends.create_messagens(send_params) do
+
+      {:ok, message} ->
+
+        PubSub.broadcast Projeto.PubSub, "user:123", {:update_messagens, message}
+        {:noreply, socket}
+
+      {:error, _} ->
+          {:noreply, socket}
+    end
+
   end
 
 
